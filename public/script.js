@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const studentEmail = document.getElementById('student-email').value;
                     const eventName = document.getElementById('event-name').value;
 
-                    const response = await fetch('http://localhost:5000/register', {
+                    const response = await fetch('https://event1-vk4i.onrender.com/register', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ studentName, college, email: studentEmail, event: eventName })
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     formData.append('utrNumber', utrNumber);
                     formData.append('screenshot', screenshotFile);
 
-                    const response = await fetch('http://localhost:5000/payment', {
+                    const response = await fetch('https://event1-vk4i.onrender.com/payment', {
                         method: 'POST',
                         body: formData
                     });
