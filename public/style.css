@@ -281,3 +281,34 @@ input:focus, select:focus {
         font-size: 1.5rem;
     }
 }
+
+/* Add this new CSS block to your existing style.css file */
+.admin-login-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 15px;
+    background-color: #555; /* A neutral color */
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 101; /* Ensure it's above the progress bar */
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.admin-login-button:hover {
+    background-color: #333;
+    transform: scale(1.05);
+}
+
+/* Optional: Add a media query for smaller screens to move the button */
+@media (max-width: 600px) {
+    .admin-login-button {
+        top: 10px;
+        right: 10px;
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+}
