@@ -28,7 +28,6 @@ async function loadRegistrations() {
 
         registrations.forEach((reg) => {
             const row = document.createElement("tr");
-            row.dataset.id = reg._id; // Set the data-id for easy lookup
 
             // Determine status class and text
             const statusText = getStatusText(reg.isApproved, reg.isRejected);
@@ -161,7 +160,9 @@ if (logoutBtn) {
 // Auto load on dashboard
 window.addEventListener("DOMContentLoaded", loadRegistrations);
 
-// Temporary Message Function
+// Temporary Message Function (requires a message div in your HTML)
+// Add this line to your HTML, somewhere near the top of your body tag:
+// <div id="dashboardMessage" style="position:fixed; top:20px; right:20px; padding:10px 20px; border-radius:5px; z-index:1000; display:none;"></div>
 function showTemporaryMessage(message, type) {
     const msgDiv = document.getElementById("dashboardMessage");
     if (!msgDiv) return;
