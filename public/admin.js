@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   try {
-    const response = await fetch('http://localhost:5000/api/admin/registrations', {
+    const response = await fetch('https://event1-vk4i.onrender.com/api/admin/registrations', {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const regId = e.target.dataset.id;
         if (confirm('Approve this registration?')) {
           try {
-            const res = await fetch(`http://localhost:5000/api/admin/approve/${regId}`, {
+            const res = await fetch(`https://event1-vk4i.onrender.com/api/admin/approve/${regId}`, {
               method: 'POST',
               headers: { Authorization: `Bearer ${token}` },
             });
@@ -83,3 +83,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     alert('Error fetching registrations.');
   }
 });
+
