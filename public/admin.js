@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const utr = `<td>${reg.payment ? reg.payment.utrNumber : 'N/A'}</td>`;
       const screenshot = `<td>${
         reg.payment
-          ? `<a href="http://localhost:5000/${reg.payment.screenshotPath}" target="_blank">View Screenshot</a>`
+          ? `<a href="https://event1-vk4i.onrender.com/${reg.payment.screenshotPath}" target="_blank">View Screenshot</a>`
           : 'N/A'
       }</td>`;
 
@@ -83,4 +83,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     alert('Error fetching registrations.');
   }
 });
+
 
