@@ -12,7 +12,7 @@ const nodemailer = require('nodemailer');
 const QRCode = require('qrcode');
 const bcrypt = require('bcryptjs'); 
 const jwt = require('jsonwebtoken');
-const PDFDocument = require('pdfkit'); // Moved this to the top for clarity
+const PDFDocument = require('pdfkit');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -49,19 +49,12 @@ const registrationSchema = new mongoose.Schema({
     event: { type: String, required: true },
     amount: { type: Number, default: 500 },
     registrationDate: { type: Date, default: Date.now },
-    isApproved: { type: Boolean, default: false }
+    isApproved: { type: Boolean, default: false },
+    isRejected: { type: Boolean, default: false } // <--- ADDED THIS FIELD
 }, {
-    toJSON: { virtuals: true },   // ✅ ensure virtuals show up in API
+    toJSON: { virtuals: true }, 
     toObject: { virtuals: true }
 });
-
-registrationSchema.virtual('payment', {
-    ref: 'Payment',
-    localField: '_id',
-    foreignField: 'registrationId',
-    justOne: true
-});
-
 
 registrationSchema.virtual('payment', {
     ref: 'Payment',
@@ -171,7 +164,6 @@ app.get('/confirmation/:id', async (req, res) => {
     }
 });
 
-
 // ADMIN ROUTES
 // Admin registration route (NOTE: For development only.)
 app.post('/api/admin/register', async (req, res) => {
@@ -210,6 +202,7 @@ app.post('/api/admin/login', async (req, res) => {
 // Get all registrations for admin dashboard (protected)
 app.get('/api/admin/registrations', authenticateAdmin, async (req, res) => {
     try {
+        // Updated query to handle both approved and rejected statuses
         const allRegistrations = await Registration.find()
             .populate('payment')
             .sort({ registrationDate: 'desc' });
@@ -220,7 +213,6 @@ app.get('/api/admin/registrations', authenticateAdmin, async (req, res) => {
     }
 });
 
-// Approve a registration, generate QR code PDF, and send email (protected)
 // Approve a registration, generate QR code PDF, and send email (protected)
 app.post('/api/admin/approve/:id', authenticateAdmin, async (req, res) => {
     try {
@@ -239,8 +231,9 @@ app.post('/api/admin/approve/:id', authenticateAdmin, async (req, res) => {
             return res.status(404).json({ message: 'Payment details not found.' });
         }
 
-        // Mark approved
+        // Mark as approved and un-reject if it was rejected before
         registration.isApproved = true;
+        registration.isRejected = false;
         await registration.save();
 
         // Prepare QR + data
@@ -305,6 +298,40 @@ app.post('/api/admin/approve/:id', authenticateAdmin, async (req, res) => {
     } catch (err) {
         console.error('Approval error:', err);
         res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
+// --- ADDED THIS NEW API ENDPOINT ---
+app.post('/api/admin/reject/:id', authenticateAdmin, async (req, res) => {
+    try {
+        const registrationId = req.params.id;
+        const registration = await Registration.findById(registrationId);
+
+        if (!registration) {
+            return res.status(404).json({ message: 'Registration not found.' });
+        }
+
+        // Check if already approved or rejected
+        if (registration.isApproved) {
+             return res.status(400).json({ message: 'Cannot reject an already approved registration.' });
+        }
+        if (registration.isRejected) {
+             return res.status(400).json({ message: 'Registration is already rejected.' });
+        }
+
+        // Update the status to rejected
+        registration.isApproved = false;
+        registration.isRejected = true;
+        await registration.save();
+        
+        // OPTIONAL: Send a rejection email to the student
+        // You can add your Nodemailer logic here for a rejection email.
+
+        res.status(200).json({ message: 'Registration rejected successfully.' });
+
+    } catch (err) {
+        console.error('Rejection failed:', err);
+        res.status(500).json({ message: 'Server error during rejection.' });
     }
 });
 
