@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-        const response = await fetch('http://localhost:5000/api/admin/registrations', {
+        const response = await fetch('https://event1-vk4i.onrender.com/api/admin/registrations', {
             headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const regId = e.target.dataset.id;
                 if (confirm('Approve this registration?')) {
                     try {
-                        const res = await fetch(`http://localhost:5000/api/admin/approve/${regId}`, {
+                        const res = await fetch(`https://event1-vk4i.onrender.com/api/admin/approve/${regId}`, {
                             method: 'POST',
                             headers: { Authorization: `Bearer ${token}` },
                         });
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const regId = e.target.dataset.id;
                 if (confirm('Reject this registration? This cannot be undone.')) {
                     try {
-                        const res = await fetch(`http://localhost:5000/api/admin/reject/${regId}`, {
+                        const res = await fetch(`https://event1-vk4i.onrender.com/api/admin/reject/${regId}`, {
                             method: 'POST',
                             headers: { Authorization: `Bearer ${token}` },
                         });
@@ -156,3 +156,4 @@ function showTemporaryMessage(message, type) {
         msgDiv.style.display = "none";
     }, 4000); // Hide after 4 seconds
 }
+
